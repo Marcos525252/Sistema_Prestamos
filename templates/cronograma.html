@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+    <h2>Cronograma de Pagos</h2>
+    <a href="/exportar/{{cliente_id}}" class="btn btn-success">Exportar a Excel</a>
+</div>
+
+
+<div class="mb-3 text-end">
+    <button onclick="window.print()" class="btn btn-danger no-print">
+        🖨 Imprimir Cronograma
+    </button>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h6>Total Préstamo</h6>
+                <h4>S/ {{total_prestamo}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h6>Total Pagado</h6>
+                <h4>S/ {{total_pagado}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h6>Total Pendiente</h6>
+                <h4>S/ {{total_pendiente}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h6>Cuotas Pagadas</h6>
+                <h4>{{cuotas_pagadas}}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Fecha Pago</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cuota in cuotas %}
+        <tr>
+            <td>{{cuota[0]}}</td>
+            <td>{{cuota[2]}}</td>
+            <td>S/ {{cuota[3]}}</td>
+            <td>
+                {% if cuota[4] == "Pagado" %}
+                    <span class="badge bg-success">Pagado</span>
+                {% elif cuota[4] == "Vencido" %}
+                    <span class="badge bg-danger">Vencido</span>
+                {% else %}
+                    <span class="badge bg-secondary">Pendiente</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if cuota[4] == "Pendiente" or cuota[4] == "Vencido" %}
+                    <a href="/pagar/{{cuota[0]}}" class="btn btn-sm btn-success">Pagar</a>
+                {% else %}
+                    ✔
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
