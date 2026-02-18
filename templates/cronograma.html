@@ -69,6 +69,8 @@
             <th>Monto</th>
             <th>Estado</th>
             <th>Acción</th>
+            <th>Mora</th>
+            <th>Puntualidad</th>
         </tr>
     </thead>
     <tbody>
@@ -77,6 +79,8 @@
             <td>{{cuota[0]}}</td>
             <td>{{cuota[2]}}</td>
             <td>S/ {{cuota[3]}}</td>
+            <td>S/ {{cuota[5]}}</td>
+            <td>{{cuota[6]}}</td>
             <td>
                 {% if cuota[4] == "Pagado" %}
                     <span class="badge bg-success">Pagado</span>
@@ -99,5 +103,6 @@
 </table>
 
 {% endblock %}
+
 
 
