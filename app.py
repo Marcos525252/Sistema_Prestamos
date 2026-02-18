@@ -224,43 +224,38 @@ def ver_cronograma(cliente_id):
     total_pagado = 0
     cuotas_pagadas = 0
 
-	for cuota in cuotas:
+		for cuota in cuotas:
 	    fecha_pago = datetime.strptime(cuota[2], "%d/%m/%Y")
 	    estado = cuota[4]
 	    monto_original = cuota[3]
 	
 	    dias_retraso = (hoy - fecha_pago).days
-	
 	    mora = 0
 	    puntualidad = "-"
+	
+	    if estado == "Pendiente" and dias_retraso > 0:
+	        mora = round(monto_original * 0.02 * dias_retraso, 2)
+	        estado = "Vencido"
+	        puntualidad = "Retrasado"
+	    elif estado == "Pagado" and dias_retraso <= 0:
+	        puntualidad = "Puntual"
+	
+	    monto_final = monto_original + mora
+	
+	    if estado == "Pagado":
+	        total_pagado += monto_original
+	        cuotas_pagadas += 1
+	
+	    cuotas_actualizadas.append((
+	        cuota[0],
+	        cuota[1],
+	        cuota[2],
+	        monto_final,
+	        estado,
+	        mora,
+	        puntualidad
+	    ))
 
-
-
-
-        # Verificar si está vencido
-        if estado == "Pendiente" and dias_retraso > 0:
-		    mora = round(monto_original * 0.02 * dias_retraso, 2)
-		    estado = "Vencido"
-
-		elif estado == "Pagado":
-    		if dias_retraso > 0:
-        		puntualidad = "Retrasado"
-    		else:
-        		puntualidad = "Puntual"
-
-
-        # Sumar pagos
-        if estado == "Pagado":
-            total_pagado += monto_original
-            cuotas_pagadas += 1
-
-        cuotas_actualizadas.append((
-            cuota[0],   # id cuota
-            cuota[1],   # cliente_id
-            cuota[2],   # fecha
-            monto_final,
-            estado
-        ))
 
     total_pendiente = total_prestamo - total_pagado
 
@@ -686,6 +681,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
