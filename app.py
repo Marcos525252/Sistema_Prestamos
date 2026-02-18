@@ -225,17 +225,29 @@ def ver_cronograma(cliente_id):
     cuotas_pagadas = 0
 
     for cuota in cuotas:
-        fecha_pago = datetime.strptime(cuota[2], "%d/%m/%Y")
-        estado = cuota[4]
-        monto_original = cuota[3]
+	    fecha_pago = datetime.strptime(cuota[2], "%d/%m/%Y")
+	    estado = cuota[4]
+	    monto_original = cuota[3]
+
+	    hoy = datetime.today()
+	    dias_retraso = (hoy - fecha_pago).days
+
+	    mora = 0
+	    puntualidad = "-"
+
+
 
         # Verificar si está vencido
-        if estado == "Pendiente" and fecha_pago < hoy:
-            estado = "Vencido"
-            mora = monto_original * 0.05
-            monto_final = round(monto_original + mora, 2)
-        else:
-            monto_final = monto_original
+        if estado == "Pendiente" and dias_retraso > 0:
+		    mora = round(monto_original * 0.02 * dias_retraso, 2)
+		    estado = "Vencido"
+
+		elif estado == "Pagado":
+    		if dias_retraso > 0:
+        		puntualidad = "Retrasado"
+    		else:
+        		puntualidad = "Puntual"
+
 
         # Sumar pagos
         if estado == "Pagado":
@@ -674,6 +686,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
