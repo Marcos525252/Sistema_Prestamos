@@ -19,7 +19,7 @@ app.secret_key = 'clave_super_secreta_123'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = "login"
 
 class User(UserMixin):
     def __init__(self, id):
@@ -50,6 +50,12 @@ def login():
 
     return render_template('login.html')
 
+
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("inicio.html")
 
 @app.route('/logout')
 @login_required
@@ -550,4 +556,5 @@ def exportar_todos():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
