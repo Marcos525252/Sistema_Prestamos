@@ -18,7 +18,7 @@
             <tr>
                 <td>{{ cuota['id'] }}</td>
                 <td>
-                    <input type="date" name="fecha_{{ cuota['id'] }}" value="{{ cuota['fecha_pago'] | datetimeformat }}">
+                    <input type="date" name="fecha_{{ cuota['id'] }}" value="{{ cuota['fecha_pago'] }}">
                 </td>
                 <td>
                     <input type="number" step="0.01" name="monto_{{ cuota['id'] }}" value="{{ cuota['cuota'] }}">
@@ -40,3 +40,4 @@
 </form>
 
 {% endblock %}
+
