@@ -301,14 +301,18 @@ def editar_cronograma(cliente_id):
             'cuota': c['cuota'],
             'estado': c['estado']
         })
-
+	
     if request.method == 'POST':
         for cuota in cuotas:
             cuota_id = cuota['id']
 
-            nueva_fecha = request.form.get(f'fecha_{cuota_id}')
-            nuevo_estado = request.form.get(f'estado_{cuota_id}')
-            nuevo_monto = request.form.get(f'monto_{cuota_id}')
+			fecha_html = request.form.get(f'fecha_{cuota_id}')
+			nuevo_estado = request.form.get(f'estado_{cuota_id}')
+			nuevo_monto = request.form.get(f'monto_{cuota_id}')
+			
+			# Convertir formato HTML (YYYY-MM-DD) a formato BD (DD/MM/YYYY)
+			fecha_obj = datetime.strptime(fecha_html, "%Y-%m-%d")
+			nueva_fecha = fecha_obj.strftime("%d/%m/%Y")
 
             cursor.execute("""
                 UPDATE cronograma
@@ -685,6 +689,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
