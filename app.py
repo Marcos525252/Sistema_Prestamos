@@ -9,7 +9,7 @@ from openpyxl import Workbook
 from flask import send_file
 import os
 from datetime import date
-
+import os
 
 app = Flask(__name__)
 from datetime import date
@@ -548,4 +548,6 @@ def exportar_todos():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
