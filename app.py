@@ -220,6 +220,36 @@ def ver_cronograma(cliente_id):
     cliente_id=cliente_id
 )
 
+@app.route("/editar_cronograma/<int:cliente_id>", methods=["GET", "POST"])
+def editar_cronograma(cliente_id):
+
+    conexion = sqlite3.connect("basedatos.db")
+    cursor = conexion.cursor()
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        monto = request.form["monto"]
+        interes = request.form["interes"]
+        plazo = request.form["plazo"]
+
+        cursor.execute("""
+            UPDATE clientes 
+            SET nombre=?, monto=?, interes=?, plazo=?
+            WHERE id=?
+        """, (nombre, monto, interes, plazo, cliente_id))
+
+        conexion.commit()
+        conexion.close()
+
+        return redirect(f"/cronograma/{cliente_id}")
+
+    cursor.execute("SELECT * FROM clientes WHERE id=?", (cliente_id,))
+    cliente = cursor.fetchone()
+    conexion.close()
+
+    return render_template("editar_cronograma.html", cliente=cliente)
+
+
 
 
 @app.context_processor
@@ -556,5 +586,6 @@ def exportar_todos():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
