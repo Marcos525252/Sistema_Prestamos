@@ -234,6 +234,8 @@ def editar_cronograma(cliente_id):
     # Obtener cronograma de ese cliente
     cursor.execute("SELECT * FROM cronograma WHERE cliente_id = ?", (cliente_id,))
     cuotas = cursor.fetchall()
+	cuotas = [dict(cuota) for cuota in cuotas]
+
 
     if request.method == 'POST':
         # Recorremos las cuotas y actualizamos según el formulario
@@ -596,6 +598,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
