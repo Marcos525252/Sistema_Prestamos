@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Editar Cronograma</h2>
+
+<form method="POST">
+
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" name="nombre" 
+               class="form-control"
+               value="{{cliente[1]}}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Monto</label>
+        <input type="number" name="monto" 
+               class="form-control"
+               value="{{cliente[2]}}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Interés (%)</label>
+        <input type="number" name="interes" 
+               class="form-control"
+               value="{{cliente[3]}}" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Plazo</label>
+        <input type="number" name="plazo" 
+               class="form-control"
+               value="{{cliente[4]}}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Guardar Cambios
+    </button>
+
+</form>
+
+{% endblock %}
