@@ -315,6 +315,27 @@ def editar_cronograma(cliente_id):
 
 
 
+@app.route('/actualizar_bd')
+def actualizar_bd():
+    conn = sqlite3.connect("prestamos.db")
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("ALTER TABLE cronograma ADD COLUMN mora REAL DEFAULT 0")
+    except:
+        pass
+
+    try:
+        cursor.execute("ALTER TABLE cronograma ADD COLUMN puntualidad TEXT DEFAULT '-'")
+    except:
+        pass
+
+    conn.commit()
+    conn.close()
+
+    return "Base de datos actualizada"
+
+
 
 
 @app.context_processor
@@ -653,6 +674,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
