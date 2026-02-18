@@ -223,41 +223,51 @@ def ver_cronograma(cliente_id):
 @app.route('/editar_cronograma/<int:cliente_id>', methods=['GET', 'POST'])
 @login_required
 def editar_cronograma(cliente_id):
+
     conn = sqlite3.connect('prestamos.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # Obtener datos del cliente
     cursor.execute("SELECT * FROM clientes WHERE id = ?", (cliente_id,))
     cliente = cursor.fetchone()
 
-    # Obtener cronograma de ese cliente
     cursor.execute("SELECT * FROM cronograma WHERE cliente_id = ?", (cliente_id,))
-    cuotas = cursor.fetchall()
-	cuotas = [dict(cuota) for cuota in cuotas]
+    cuotas_db = cursor.fetchall()
 
+    # CREAR LISTA NUEVA
+    cuotas = []
+    from datetime import datetime
+
+    for c in cuotas_db:
+        fecha_obj = datetime.strptime(c['fecha_pago'], "%d/%m/%Y")
+        cuotas.append({
+            'id': c['id'],
+            'fecha_pago': fecha_obj.strftime("%Y-%m-%d"),
+            'cuota': c['cuota'],
+            'estado': c['estado']
+        })
 
     if request.method == 'POST':
-    for cuota in cuotas:
-        cuota_id = cuota['id']
+        for cuota in cuotas:
+            cuota_id = cuota['id']
 
-        nueva_fecha = request.form.get(f'fecha_{cuota_id}')
-        nuevo_estado = request.form.get(f'estado_{cuota_id}')
-        nuevo_monto = request.form.get(f'monto_{cuota_id}')
+            nueva_fecha = request.form.get(f'fecha_{cuota_id}')
+            nuevo_estado = request.form.get(f'estado_{cuota_id}')
+            nuevo_monto = request.form.get(f'monto_{cuota_id}')
 
-        cursor.execute("""
-            UPDATE cronograma
-            SET fecha_pago = ?, cuota = ?, estado = ?
-            WHERE id = ?
-        """, (nueva_fecha, nuevo_monto, nuevo_estado, cuota_id))
+            cursor.execute("""
+                UPDATE cronograma
+                SET fecha_pago = ?, cuota = ?, estado = ?
+                WHERE id = ?
+            """, (nueva_fecha, nuevo_monto, nuevo_estado, cuota_id))
 
-    conn.commit()
-    conn.close()
-    return redirect(f'/cronograma/{cliente_id}')
-
+        conn.commit()
+        conn.close()
+        return redirect(f'/cronograma/{cliente_id}')
 
     conn.close()
     return render_template('editar_cronograma.html', cliente=cliente, cuotas=cuotas)
+
 
 
 
@@ -599,6 +609,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
