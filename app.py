@@ -238,22 +238,23 @@ def editar_cronograma(cliente_id):
 
 
     if request.method == 'POST':
-        # Recorremos las cuotas y actualizamos según el formulario
-        for cuota in cuotas:
-            cuota_id = cuota['id']
-            nueva_fecha = request.form.get(f'fecha_{cuota_id}')
-            nuevo_estado = request.form.get(f'estado_{cuota_id}')
-            nuevo_monto = request.form.get(f'monto_{cuota_id}')
+    for cuota in cuotas:
+        cuota_id = cuota['id']
 
-            cursor.execute("""
-                UPDATE cronograma
-                SET fecha_pago = ?, cuota = ?, estado = ?
-                WHERE id = ?
-            """, (nueva_fecha, nuevo_monto, nuevo_estado, cuota_id))
+        nueva_fecha = request.form.get(f'fecha_{cuota_id}')
+        nuevo_estado = request.form.get(f'estado_{cuota_id}')
+        nuevo_monto = request.form.get(f'monto_{cuota_id}')
 
-        conn.commit()
-        conn.close()
-        return redirect(f'/cronograma/{cliente_id}')
+        cursor.execute("""
+            UPDATE cronograma
+            SET fecha_pago = ?, cuota = ?, estado = ?
+            WHERE id = ?
+        """, (nueva_fecha, nuevo_monto, nuevo_estado, cuota_id))
+
+    conn.commit()
+    conn.close()
+    return redirect(f'/cronograma/{cliente_id}')
+
 
     conn.close()
     return render_template('editar_cronograma.html', cliente=cliente, cuotas=cuotas)
@@ -598,6 +599,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
