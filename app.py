@@ -160,6 +160,50 @@ def nuevo():
     return render_template("nuevo.html")
 
 
+@app.route('/editar_cliente/<int:cliente_id>', methods=['GET', 'POST'])
+@login_required
+def editar_cliente(cliente_id):
+    conn = sqlite3.connect('prestamos.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # SI ENVÍA FORMULARIO
+    if request.method == 'POST':
+        nombre = request.form['nombre']
+        apellidos = request.form['apellidos']
+        dni = request.form['dni']
+        direccion = request.form['direccion']
+        telefono = request.form['telefono']
+        monto = float(request.form['monto'])
+        interes = float(request.form['interes'])
+        tipo_pago = request.form['tipo_pago']
+        cuotas = int(request.form['cuotas'])
+
+        total = monto + (monto * interes / 100)
+
+        cursor.execute("""
+            UPDATE clientes
+            SET nombre=?, apellidos=?, dni=?, direccion=?, telefono=?,
+                monto=?, interes=?, total=?, tipo_pago=?, cuotas=?
+            WHERE id=?
+        """, (
+            nombre, apellidos, dni, direccion, telefono,
+            monto, interes, total, tipo_pago, cuotas, cliente_id
+        ))
+
+        conn.commit()
+        conn.close()
+        return redirect('/')
+
+    # SI SOLO ENTRA A VER
+    cursor.execute("SELECT * FROM clientes WHERE id=?", (cliente_id,))
+    cliente = cursor.fetchone()
+    conn.close()
+
+    return render_template('editar_cliente.html', cliente=cliente)
+
+
+
 @app.route("/cronograma/<int:cliente_id>")
 def ver_cronograma(cliente_id):
     conn = sqlite3.connect("prestamos.db")
@@ -609,6 +653,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
