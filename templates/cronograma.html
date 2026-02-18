@@ -4,7 +4,17 @@
 
 <div class="d-flex justify-content-between mb-3">
     <h2>Cronograma de Pagos</h2>
-    <a href="/exportar/{{cliente_id}}" class="btn btn-success">Exportar a Excel</a>
+    <div>
+        <a href="/editar_cronograma/{{cliente_id}}" 
+           class="btn btn-warning">
+           ✏ Editar Cronograma
+        </a>
+
+        <a href="/exportar/{{cliente_id}}" 
+           class="btn btn-success">
+           Exportar a Excel
+        </a>
+    </div>
 </div>
 
 
@@ -89,3 +99,4 @@
 </table>
 
 {% endblock %}
+
