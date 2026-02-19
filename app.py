@@ -225,12 +225,15 @@ def ver_cronograma(cliente_id):
     cuotas_pagadas = 0
 
     for cuota in cuotas:
-     if "-" in fecha_str:
-         fecha_pago = datetime.strptime(cuota[2], "%d/%m/%Y")
-     else:
-         fecha_pago = datetime.strptime(cuota[2], "%Y-%m-%d")
+        fecha_str = cuota[2]
 
-		    estado = cuota[4]
+      if "-" in fecha_str:
+           fecha_pago = datetime.strptime(fecha_str, "%Y-%m-%d")
+      else:
+            fecha_pago = datetime.strptime(fecha_str, "%d/%m/%Y")
+
+            estado = cuota[4]
+
 		    monto_original = cuota[3]
 		
 		    dias_retraso = (hoy - fecha_pago).days
@@ -689,6 +692,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
