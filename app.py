@@ -224,15 +224,16 @@ def ver_cronograma(cliente_id):
     total_pagado = 0
     cuotas_pagadas = 0
 
-    for cuota in cuotas:
-        fecha_str = cuota[2]
+for cuota in cuotas:
+    fecha_str = cuota[2]
 
-      if "-" in fecha_str:
-           fecha_pago = datetime.strptime(fecha_str, "%Y-%m-%d")
-      else:
-            fecha_pago = datetime.strptime(fecha_str, "%d/%m/%Y")
+    if "-" in fecha_str:
+        fecha_pago = datetime.strptime(fecha_str, "%Y-%m-%d")
+    else:
+        fecha_pago = datetime.strptime(fecha_str, "%d/%m/%Y")
 
-            estado = cuota[4]
+    estado = cuota[4]
+
 
 		    monto_original = cuota[3]
 		
@@ -692,6 +693,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
