@@ -240,16 +240,16 @@ for cuota in cuotas:
     mora = 0
     puntualidad = "-"
 	
-		    if estado == "Pendiente" and dias_retraso > 0:
+	if estado == "Pendiente" and dias_retraso > 0:
 		        mora = round(monto_original * 0.02 * dias_retraso, 2)
 		        estado = "Vencido"
 		        puntualidad = "Retrasado"
-		    elif estado == "Pagado" and dias_retraso <= 0:
+     elif estado == "Pagado" and dias_retraso <= 0:
 		        puntualidad = "Puntual"
 		
 		    monto_final = monto_original + mora
 		
-		    if estado == "Pagado":
+    if estado == "Pagado":
 		        total_pagado += monto_original
 		        cuotas_pagadas += 1
 		
@@ -692,6 +692,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
