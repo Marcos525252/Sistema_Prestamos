@@ -235,11 +235,11 @@ for cuota in cuotas:
     estado = cuota[4]
 
 
-		    monto_original = cuota[3]
+	 monto_original = cuota[3]
 		
-		    dias_retraso = (hoy - fecha_pago).days
-		    mora = 0
-		    puntualidad = "-"
+    dias_retraso = (hoy - fecha_pago).days
+    mora = 0
+    puntualidad = "-"
 	
 		    if estado == "Pendiente" and dias_retraso > 0:
 		        mora = round(monto_original * 0.02 * dias_retraso, 2)
@@ -693,6 +693,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
