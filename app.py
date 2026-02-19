@@ -224,59 +224,58 @@ def ver_cronograma(cliente_id):
     total_pagado = 0
     cuotas_pagadas = 0
 
-for cuota in cuotas:
-    fecha_str = cuota[2]
+    for cuota in cuotas:
+        fecha_str = cuota[2]
 
-    if "-" in fecha_str:
-        fecha_pago = datetime.strptime(fecha_str, "%Y-%m-%d")
-    else:
-        fecha_pago = datetime.strptime(fecha_str, "%d/%m/%Y")
+        if "-" in fecha_str:
+            fecha_pago = datetime.strptime(fecha_str, "%Y-%m-%d")
+        else:
+            fecha_pago = datetime.strptime(fecha_str, "%d/%m/%Y")
 
-    estado = cuota[4]
+        estado = cuota[4]
+        monto_original = cuota[3]
 
-    monto_original = cuota[3]
-		
-    dias_retraso = (hoy - fecha_pago).days
-    mora = 0
-    puntualidad = "-"
-	
-	if estado == "Pendiente" and dias_retraso > 0:
-		        mora = round(monto_original * 0.02 * dias_retraso, 2)
-		        estado = "Vencido"
-		        puntualidad = "Retrasado"
-     elif estado == "Pagado" and dias_retraso <= 0:
-		        puntualidad = "Puntual"
-		
-		    monto_final = monto_original + mora
-		
-    if estado == "Pagado":
-		        total_pagado += monto_original
-		        cuotas_pagadas += 1
-		
-		    cuotas_actualizadas.append((
-		        cuota[0],
-		        cuota[1],
-		        cuota[2],
-		        monto_final,
-		        estado,
-		        mora,
-		        puntualidad
-		    ))
+        dias_retraso = (hoy - fecha_pago).days
+        mora = 0
+        puntualidad = "-"
 
+        if estado == "Pendiente" and dias_retraso > 0:
+            mora = round(monto_original * 0.02 * dias_retraso, 2)
+            estado = "Vencido"
+            puntualidad = "Retrasado"
+
+        elif estado == "Pagado" and dias_retraso <= 0:
+            puntualidad = "Puntual"
+
+        monto_final = monto_original + mora
+
+        if estado == "Pagado":
+            total_pagado += monto_original
+            cuotas_pagadas += 1
+
+        cuotas_actualizadas.append((
+            cuota[0],
+            cuota[1],
+            cuota[2],
+            monto_final,
+            estado,
+            mora,
+            puntualidad
+        ))
 
     total_pendiente = total_prestamo - total_pagado
-
     conn.close()
 
     return render_template(
-    "cronograma.html",
-    cuotas=cuotas_actualizadas,
-    total_prestamo=total_prestamo,
-    total_pagado=total_pagado,
-    total_pendiente=total_pendiente,
-    cuotas_pagadas=cuotas_pagadas,
-    cliente_id=cliente_id
-)
+        "cronograma.html",
+        cuotas=cuotas_actualizadas,
+        total_prestamo=total_prestamo,
+        total_pagado=total_pagado,
+        total_pendiente=total_pendiente,
+        cuotas_pagadas=cuotas_pagadas,
+        cliente_id=cliente_id
+    )
+
 
 @app.route('/editar_cronograma/<int:cliente_id>', methods=['GET', 'POST'])
 @login_required
@@ -307,21 +306,21 @@ def editar_cronograma(cliente_id):
 	
     if request.method == 'POST':
         for cuota in cuotas:
-            cuota_id = cuota['id']
+           cuota_id = cuota['id']
 
-			fecha_html = request.form.get(f'fecha_{cuota_id}')
-			nuevo_estado = request.form.get(f'estado_{cuota_id}')
-			nuevo_monto = request.form.get(f'monto_{cuota_id}')
-			
-			# Convertir formato HTML (YYYY-MM-DD) a formato BD (DD/MM/YYYY)
-			fecha_obj = datetime.strptime(fecha_html, "%Y-%m-%d")
-			nueva_fecha = fecha_obj.strftime("%d/%m/%Y")
+            fecha_html = request.form.get(f'fecha_{cuota_id}')
+            nuevo_estado = request.form.get(f'estado_{cuota_id}')
+            nuevo_monto = request.form.get(f'monto_{cuota_id}')
+
+            fecha_obj = datetime.strptime(fecha_html, "%Y-%m-%d")
+            nueva_fecha = fecha_obj.strftime("%d/%m/%Y")
 
             cursor.execute("""
                 UPDATE cronograma
                 SET fecha_pago = ?, cuota = ?, estado = ?
                 WHERE id = ?
             """, (nueva_fecha, nuevo_monto, nuevo_estado, cuota_id))
+
 
         conn.commit()
         conn.close()
@@ -692,6 +691,7 @@ import os
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
 
 
 
